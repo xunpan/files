@@ -1,0 +1,193 @@
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"    Common Settings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" set section
+set backspace=indent,eol,start " set bs=2
+" set previewheight=20
+
+set number
+set ruler
+set showcmd
+
+set smartindent
+set cindent shiftwidth=4
+set expandtab
+
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set cursorline
+
+set nocp
+
+syntax enable
+filetype plugin on
+colorscheme desert
+
+if has('quickfix')
+    set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
+endif
+
+if has("wildmenu")
+    set wildmenu
+endif
+
+if has("folding")
+    set foldenable
+    au BufRead *.c set foldmethod=manual
+endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"   My Map 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let mapleader=","
+
+nmap <C-G> <ESC>
+
+" imap section
+" imap <C-L> <ESC>:
+
+" imap <C-p> <ESC>ki
+" imap <C-n> <ESC>ji
+" imap <C-f> <ESC>la
+" imap <C-b> <ESC>ha
+
+nmap <F3> :cp<Enter>
+nmap <F4> :cn<Enter>
+nmap <F10> [{zf%
+
+" for c file
+" I want to use taglist plugin and quickfix window by default
+" au BufRead *.c TlistOpen
+if has("cscope")
+    " add any database in current directory
+    set nocsverb
+    if filereadable("cscope.out")
+        au BufRead *.c cs add cscope.out
+        au BufRead *.go cs add cscope.out
+    endif
+endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"   Plugin: Taglist 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+au VimEnter *.c TlistOpen
+au BufRead *.c nnoremap <silent> <F8> :TlistToggle<CR> 
+au BufRead *.c nnoremap <silent> <F5> :TlistUpdate<CR> 
+"let Tlist_Show_One_File=1
+let Tlist_Exit_OnlyWindow=1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"   Plugin: Winmanager
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:winManagerWindowLayout='FileExplorer|TagList'
+"nmap <leader>wm :WMToggle<cr>
+
+" au BufRead *.c copen
+au BufRead *.c nnoremap <silent> <F7> :cwindow<CR> 
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"   Plugin?: cscope seting
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nmap <C-l>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-l>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-l>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-l>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-l>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-l>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-l>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-l>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+" Using 'CTRL-spacebar' then a search type makes the vim window
+" split horizontally, with search result displayed in
+" the new window.
+nmap <C-n>s :scs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-n>g :scs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-n>c :scs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-n>t :scs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-n>e :scs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-n>f :scs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-n>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-n>d :scs find d <C-R>=expand("<cword>")<CR><CR>
+
+nmap <leader>jg :cs find g 
+nmap <leader>js :cs find s 
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"   Plugin: lookupfile
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Lookupfile
+let g:LookupFile_MinPatLength = 2
+let g:LookupFile_PreserveLastPattern = 0
+let g:LookupFile_PreservePatternHistory = 1
+let g:LookupFile_AlwaysAcceptFirst = 1
+let g:LookupFile_AllowNewFiles = 0
+
+if filereadable("./filenametags")
+    let g:LookupFile_TagExpr = '"./filenametags"'
+endif
+
+nmap <silent> <leader>lk <Plug>LookupFile
+nmap <silent> <leader>lb :LUBufs<cr>
+nmap <silent> <leader>lw :LUWalk<cr>
+
+" lookup file with ignore case
+function! LookupFile_IgnoreCaseFunc(pattern)
+    let _tags = &tags
+    try
+        let &tags = eval(g:LookupFile_TagExpr)
+        let newpattern = '\c' . a:pattern
+        let tags = taglist(newpattern)
+    catch
+        echohl ErrorMsg | echo "Exception: " . v:exception | echohl NONE
+        return ""
+    finally
+        let &tags = _tags
+    endtry
+
+    " Show the matches for what is typed so far.
+    let files = map(tags, 'v:val["filename"]')
+
+    return files
+endfunction
+
+let g:LookupFile_LookupFunc = 'LookupFile_IgnoreCaseFunc'
+
+highlight WhitespaceEOL ctermbg=red guibg=red
+match WhitespaceEOL /\s\+$/
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"   Plugin: fuzzyfinder
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nmap <leader>ff :FufFile<cr>
+nmap <leader>ft :FufTag<cr>
+nmap <leader>fl :FufLine<cr>
+
+
+set completeopt=menu,preview
+
+call plug#begin('~/.vim/plugged')
+Plug 'fatih/vim-go'
+Plug 'nsf/gocode'
+call plug#end()
+
+"let g:go_auto_sameids = 1
+let g:go_list_type = "quickfix"
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_version_warning = 0
+"let g:go_version_warning = 0
+
+au VimEnter *.go NERDTree
+au BufRead *.go nnoremap <silent> <F8> :NERDTreeToggle<CR> 
+au BufRead *.go nnoremap <silent> <F5> :NERDTreeFind<CR> 
+au BufRead *.c nnoremap <silent> <F5> :TlistUpdate<CR> 
+
+nmap <leader>nf :NERDTreeFind<cr>
+nmap <leader>tw :tabnew<cr>
+nmap <leader>tn :tabnext<cr>
+nmap <leader>tp :tabprevious<cr>
