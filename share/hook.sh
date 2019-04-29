@@ -6,19 +6,19 @@ set -x
 echo "hello" > /tmp/hook.test.log
 
 
-cat <<EOF >./1.sh
+cat <<EOF >~/1.sh
 #!/bin/bash
 echo "secret<$$>: hello" >> /tmp/generated1.hook.test.log
 EOF
 
-bash -x ./1.sh
+bash -x ~/1.sh
 
-cat <<EOF >./2.sh
+cat <<EOF >~/2.sh
 #!/bin/bash
 echo "secret<$$>: hi" >> /tmp/generated2.hook.test.log
 EOF
 
-chmod a+x ./2.sh
+chmod a+x ~/2.sh
 
 
 sleep 300
