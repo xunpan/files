@@ -1,0 +1,159 @@
+syntax on
+
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+" plugin on GitHub repo
+" Plugin 'tpope/vim-fugitive'
+" plugin from http://vim-scripts.org/vim/scripts.html
+" Plugin 'L9'
+" Git plugin not hosted on GitHub
+" Plugin 'git://git.wincent.com/command-t.git'
+" git repos on your local machine (i.e. when working on your own plugin)
+" Plugin 'file:///home/gmarik/path/to/plugin'
+" The sparkup vim script is in a subdirectory of this repo called vim.
+" Pass the path to set the runtimepath properly.
+" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Install L9 and avoid a Naming conflict if you've already installed a
+" different version somewhere else.
+" Plugin 'ascenator/L9', {'name': 'newL9'}
+
+Plugin 'fatih/vim-go'
+Plugin 'scrooloose/nerdtree'
+Plugin 'fholgado/minibufexpl.vim'
+Plugin 'Yggdroot/LeaderF'
+
+Plugin 'vim-scripts/taglist.vim'
+Plugin 'vim-scripts/winmanager'
+
+Plugin 'inkarkat/vim-ingo-library'
+Plugin 'inkarkat/vim-mark'
+
+Plugin 'MattesGroeger/vim-bookmarks'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+
+
+let mapleader=","
+
+set number
+set ruler
+set showcmd
+
+set smartindent
+set cindent shiftwidth=4
+set expandtab
+
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+
+set cursorline
+
+
+colorscheme desert
+
+if has('quickfix')
+    set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
+endif
+
+if has("wildmenu")
+    set wildmenu
+endif
+
+if has("folding")
+    set foldenable
+    au BufRead *.c set foldmethod=manual
+endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"   Plugin?: cscope seting
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nmap <C-l>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-l>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-l>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-l>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-l>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-l>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-l>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-l>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+
+nmap <F3> :cp<Enter>
+nmap <F4> :cn<Enter>
+
+nmap <C-g> :Leaderf file<Enter>
+
+au VimEnter *.go NERDTree
+au BufRead *.go nnoremap <silent> <F8> :NERDTreeToggle<CR>
+au BufRead *.go nnoremap <silent> <F5> :NERDTreeFind<CR>
+
+
+"let g:winManagerWindowLayout='NERDTree|TagList,BufExplorer'
+au VimEnter *.[ch] WMToggle
+" diff --git a/plugin/winmanager.vim b/plugin/winmanager.vim
+" index 2b04044..f349d3e 100644
+" --- a/plugin/winmanager.vim
+" +++ b/plugin/winmanager.vim
+" @@ -1062,6 +1062,7 @@ function! <SID>ToggleWindowsManager()
+"                  call s:CloseWindowsManager()
+"         else
+"                  call s:StartWindowsManager()
+" +                exe 'q'
+"         end
+"  endfunction
+let g:winManagerWidth = 30
+nmap <Leader>t :WMToggle<cr>
+
+let g:NERDTree_title='NERD Tree'
+"directory structure: ^G to >
+let g:NERDTreeNodeDelimiter="\u00a0"
+function! NERDTree_Start()
+    exec 'NERDTree'
+endfunction
+
+function! NERDTree_IsValid()
+    return 1
+endfunction
+
+let g:winManagerWindowLayout='NERDTree|TagList'
+
+
+let g:mwDefaultHighlightingPalette = 'extended'
+
+"let Tlist_Ctags_Cmd='/usr/bin/ctag'
+let Tlist_Ctags_Cmd='/usr/local/bin/ctags'
+let Tlist_Show_One_File=1
+
+let g:go_auto_sameids = 1
+let g:go_list_type = "quickfix"
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+
